@@ -4,6 +4,6 @@ output/
 # Ignorar archivos en la carpeta downloads
 downloads/
 
-scrap_indec_comex/
+venv/
 
 *.pyc
