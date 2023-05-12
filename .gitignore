@@ -1,9 +1,9 @@
 # Ignorar archivos en la carpeta output
-output/
+output/*
 
 # Ignorar archivos en la carpeta downloads
-downloads/
+downloads/*
 
-venv/
+venv/*
 
 *.pyc
