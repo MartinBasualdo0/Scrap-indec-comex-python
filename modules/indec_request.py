@@ -1,6 +1,7 @@
 import requests
 from typing import Literal
 import re
+import os
 
 '''Maybe I sould add an option to delete all downloads files'''
 
@@ -20,9 +21,8 @@ def _get_zip_names(commerce:Literal["exports", "imports", "all"],
         id_values = [value for value in id_values if int(re.findall(r'\d+', value)[0]) >= year_from]
     return id_values
 
-def _download_zips(zip_names:list[str]):
+def _download_zips(zip_names:list[str], folder_path:str ):
     for zip_name in zip_names:
-
         url = f'https://comex.indec.gob.ar/files/zips/{zip_name}'
 
         # The headers from your proxy intercept, including cookies
@@ -41,18 +41,45 @@ def _download_zips(zip_names:list[str]):
         # Check if the request was successful
         if response.status_code == 200:
             # Open a file in write-binary mode and write the content
-            with open(f'./downloads/{zip_name}', 'wb') as file:
+            with open(f'{folder_path}/{zip_name}', 'wb') as file:
                 file.write(response.content)
             print(f"File downloaded successfully. {zip_name}")
         else:
             print(f"Failed to download the file. Status code: {response.status_code}")
-        return 
+    
+def _delete_all_files_in_folder(folder_path):
+    # Ensure the folder path ends with a slash
+    if not folder_path.endswith('/'):
+        folder_path += '/'
+    
+    # Loop through all the contents of the folder
+    for filename in os.listdir(folder_path):
+        # Construct the full file path
+        file_path = folder_path + filename
+        
+        # Check if the item is a file
+        if os.path.isfile(file_path):
+            # Remove the file
+            os.remove(file_path)
     
 def main_download_zips(
     commerce:Literal["exports", "imports", "all"], 
     frequency: Literal["Y", "M", "all"],
-    year_from:int = None
+    year_from:int = None,
+    drop_all_files:bool = True,
     ):
+    download_folder = "./downloads"
+    if drop_all_files:
+        _delete_all_files_in_folder(download_folder)
     zip_names = _get_zip_names(commerce, frequency, year_from)
-    _download_zips(zip_names)
-    return
+    _download_zips(zip_names, download_folder)
+    
+def get_years_from_filenames(folder_path):
+    if not folder_path.endswith('/'):
+        folder_path += '/'
+    years = []
+    for filename in os.listdir(folder_path):
+        year_match = re.findall(r'\d{4}', filename)
+        if year_match:
+            years.append(int(year_match[0]))
+    return years
