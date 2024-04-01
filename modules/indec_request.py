@@ -2,8 +2,7 @@ import requests
 from typing import Literal
 import re
 import os
-
-'''Maybe I sould add an option to delete all downloads files'''
+from modules.check import check_and_create_directories
 
 def _get_zip_names(commerce:Literal["exports", "imports", "all"], 
                   frequency: Literal["Y", "M", "all"],
@@ -68,6 +67,7 @@ def main_download_zips(
     year_from:int = None,
     drop_all_files:bool = True,
     ):
+    check_and_create_directories()
     download_folder = "./downloads"
     if drop_all_files:
         _delete_all_files_in_folder(download_folder)
