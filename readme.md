@@ -46,14 +46,6 @@ The "jupyter" folder contains Jupyter notebooks for data analysis and visualizat
 
 This project requires the following dependencies:
 
-- Python 3
-- BeautifulSoup (for web scraping)
-- Pandas (for data manipulation)
-- Matplotlib (for data visualization)
-- Jupyter (for running the provided notebooks)
-
-You can install the required dependencies using pip:
-
 ```
 pip install -r requirements.txt
 ```
