@@ -12,11 +12,11 @@ def shorten_description(descri, length = 45):
 def get_monthly_date_df(year_from:str, df:pd.DataFrame, frequency:Literal["Y","M"], ):
     if frequency == "M":
         start_series = f"{df.month.iloc[0]}/01/{year_from}"
-        end_series = f"{int(df.month.iloc[-1])+1}/01/{int(df.year.iloc[-1])+1}"
+        end_series = f"{int(df.month.iloc[-1])+1}/01/{int(df.year.iloc[-1])}"
     else:
         start_series = f"{year_from}"
-        end_series = str(int(df.year.iloc[-1])+1)
-        
+        end_series = str(int(df.year.iloc[-1])) #!I do not want to see if the year has not finished
+        # This could be a problem if the publication is for december
     df_dates = pd.DataFrame({
     'date': pd.date_range(start=start_series, end=end_series, freq=frequency)
     })
@@ -51,9 +51,7 @@ def bar_plot(df:pd.DataFrame,
              include_countries:bool = True):
     df = filter_dataframe_for_plot(df, ncm_code,year_from)
     descri = shorten_description(df.ncmDescription.iloc[0], length = 60)
-    df = prepare_dataframe_for_plot(df, frequency, year_from, include_countries)
-    
-        
+    df = prepare_dataframe_for_plot(df, frequency, year_from, include_countries)        
     titles_dict = TITLES_DICT[commerce][variable]
     title_commerce = titles_dict["title_commerce"]
     title_unit_meassure = titles_dict["title_unit_meassure"]
